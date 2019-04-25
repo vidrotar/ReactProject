@@ -37,14 +37,37 @@ class App extends Component {
     this.state = {
       list: list,
       name: 'local',
+      searchTerm: '',
     };
+
+    // bind method to class -> a new class method
+    this.onDismiss = this.onDismiss.bind(this);
+    this.onSearchChange = this.onSearchChange.bind(this);
   };
+
+  // define method -> it's functionality
+  onDismiss(id) {
+    const isNotId = item => item.objectID !== id;
+    const updatedList = this.state.list.filter(isNotId);
+    this.setState({list: updatedList});
+  }
+
+  // filters list based on typed phrase
+  onSearchChange(event) {
+    this.setState({ searchTerm: event.target.value});
+  }
 
   render() {
     const someone = new Developer('Jan', 'Hus');
     console.log(someone.getName());
     return (
       <div className="App">
+        <form>
+          <input
+            type="text"
+            onChange={this.onSearchChange}
+          />
+        </form>
         <h1>Learning React</h1>
         {this.state.list.map(item => {
           return (
@@ -55,6 +78,14 @@ class App extends Component {
               <span>{' ' + item.author}</span>
               <span>{' ' + item.num_comments}</span>
               <span>{' ' + item.points}</span>
+              <span>
+                <button
+                  onClick={() => this.onDismiss(item.objectID)}
+                  type="button"
+                >
+                  Dismiss
+                </button>
+              </span>
             </div>
           )
         })}
